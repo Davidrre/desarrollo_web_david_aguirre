@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informar avistamiento - Avistamientos de Aves</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Unión de Ornitólogos de Chile</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="registro.html">Registrarse</a></li>
+        <li><a href="avistamiento.html" aria-current="page">Informar avistamiento</a></li>
+        <li><a href="listado.html">Ver avistamientos</a></li>
+        <li><a href="estadisticas.html">Estadísticas</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="seccion-avistamiento">
+      <h2>Informar avistamiento</h2>
+      <p>
+        Complete los datos del avistamiento. Los campos marcados con
+        <span class="obligatorio">*</span> son obligatorios.
+      </p>
+
+      <form id="form-avistamiento" novalidate>
+        <div class="campo">
+          <label for="voluntario">Voluntario(a) que informa <span class="obligatorio">*</span></label>
+          <select id="voluntario" name="voluntario">
+            <option value="">-- Seleccione un voluntario registrado --</option>
+            <option value="maria-perez">María Pérez</option>
+            <option value="juan-soto">Juan Soto</option>
+            <option value="camila-rojas">Camila Rojas</option>
+          </select>
+          <span class="error" id="error-voluntario">Debe seleccionar un voluntario registrado.</span>
+        </div>
+
+          <div>Ave avistada</div>
+          <br>
+
+          <div class="campo">
+            <label for="tipo-ave">Tipo de ave <span class="obligatorio">*</span></label>
+            <select id="tipo-ave" name="tipo-ave">
+              <option value="">-- Seleccione un tipo --</option>
+              <option value="rapaz">Rapaz</option>
+              <option value="acuatica">Acuática</option>
+              <option value="paseriforme">Paseriforme</option>
+              <option value="playera">Playera / costera</option>
+              <option value="otra">Otra</option>
+            </select>
+            <span class="error" id="error-tipo-ave">Debe seleccionar un tipo de ave.</span>
+          </div>
+
+          <div class="campo">
+            <label for="nombre-ave">Nombre del ave <span class="obligatorio">*</span></label>
+            <input type="text" id="nombre-ave" name="nombre-ave" placeholder="Ej: Cóndor andino">
+            <span class="error" id="error-nombre-ave">Ingrese un nombre válido (mínimo 3 caracteres).</span>
+          </div>
+
+          <br>
+          <div>Datos del avistamiento</div>
+          <br>
+
+          <div class="campo">
+            <label for="lugar">Lugar del avistamiento <span class="obligatorio">*</span></label>
+            <input type="text" id="lugar" name="lugar" placeholder="Ej: Parque Nacional Torres del Paine">
+            <span class="error" id="error-lugar">Ingrese un lugar válido (mínimo 3 caracteres).</span>
+          </div>
+
+          <div class="campo">
+            <label for="fecha-avistamiento">Fecha del avistamiento <span class="obligatorio">*</span></label>
+            <input type="date" id="fecha-avistamiento" name="fecha-avistamiento">
+            <span class="error" id="error-fecha-avistamiento">La fecha no puede ser futura ni mayor a 1 año atrás.</span>
+          </div>
+
+          <div class="campo">
+            <label for="hora-avistamiento">Hora del avistamiento <span class="obligatorio">*</span></label>
+            <input type="time" id="hora-avistamiento" name="hora-avistamiento">
+            <span class="error" id="error-hora-avistamiento">Debe indicar una hora.</span>
+          </div>
+
+        <div class="campo">
+          <label for="archivos">Foto o vídeo del avistamiento <span class="obligatorio">*</span></label>
+          <input type="file" id="archivos" name="archivos" accept="image/*,video/*" multiple>
+          <span class="error" id="error-archivos">Debe adjuntar al menos una foto o vídeo (formato imagen o vídeo).</span>
+        </div>
+
+        <div class="campo">
+          <label for="comentario">Comentario adicional (opcional)</label>
+          <textarea id="comentario" name="comentario" rows="4" placeholder="Ej: comportamiento observado, cantidad de individuos, etc."></textarea>
+        </div>
+
+        <button type="submit" id="btn-informar">Informar avistamiento</button>
+      </form>
+
+      <div id="mensaje-exito" class="mensaje-exito" hidden>
+        <p>¡Avistamiento informado con éxito! (Este es solo un prototipo, los datos no se almacenan.)</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/avistamiento.js"></script>
+</body>
+</html>

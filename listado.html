@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listado de avistamientos - Avistamientos de Aves</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Unión de Ornitólogos de Chile</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="registro.html">Registrarse</a></li>
+        <li><a href="avistamiento.html">Informar avistamiento</a></li>
+        <li><a href="listado.html" aria-current="page">Ver avistamientos</a></li>
+        <li><a href="estadisticas.html">Estadísticas</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="seccion-listado">
+      <h2>Listado de avistamientos</h2>
+
+      <div class="controles-listado">
+        <div class="campo campo-inline">
+          <label for="filtro-tipo">Filtrar por tipo de ave</label>
+          <select id="filtro-tipo">
+            <option value="">Todos</option>
+            <option value="rapaz">Rapaz</option>
+            <option value="acuatica">Acuática</option>
+            <option value="paseriforme">Paseriforme</option>
+            <option value="playera">Playera / costera</option>
+          </select>
+        </div>
+
+        <div class="campo campo-inline">
+          <label for="ordenar-por">Ordenar por</label>
+          <select id="ordenar-por">
+            <option value="fecha-desc">Fecha (más reciente primero)</option>
+            <option value="fecha-asc">Fecha (más antigua primero)</option>
+            <option value="lugar-asc">Lugar (A-Z)</option>
+            <option value="lugar-desc">Lugar (Z-A)</option>
+          </select>
+        </div>
+      </div>
+
+      <table id="tabla-avistamientos">
+        <thead>
+          <tr>
+            <th scope="col">Ave</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Lugar</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Voluntario(a)</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo-tabla">
+        </tbody>
+      </table>
+
+      <p id="sin-resultados" class="sin-resultados" hidden>
+        No hay avistamientos que coincidan con el filtro seleccionado.
+      </p>
+
+      <nav class="paginacion" aria-label="Paginación de avistamientos">
+        <button type="button" id="btn-anterior">&laquo; Anterior</button>
+        <span id="info-pagina"></span>
+        <button type="button" id="btn-siguiente">Siguiente &raquo;</button>
+      </nav>
+    </section>
+  </main>
+  
+  <script src="js/avistamientos-data.js"></script>
+  <script src="js/listado.js"></script>
+</body>
+</html>
