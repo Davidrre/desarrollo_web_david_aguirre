@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Registro exitoso{% endblock %}
+
+{% block content %}
+<section id="seccion-registro-exito">
+  <h2>¡Registro exitoso!</h2>
+  <p>Gracias <strong>{{ voluntario.nombre }}</strong>, tu registro como voluntario(a) fue guardado correctamente.</p>
+  <p>¿Qué te gustaría hacer ahora?</p>
+  <div class="botones">
+    <a href="{{ url_for('registrar_avistamiento', voluntario_id=voluntario.id) }}">
+      <button type="button">Informar un avistamiento</button>
+    </a>
+    <a href="{{ url_for('index') }}">
+      <button type="button">Ir al inicio</button>
+    </a>
+  </div>
+</section>
+{% endblock %}

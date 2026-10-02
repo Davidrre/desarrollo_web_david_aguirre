@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Listado de avistamientos{% endblock %}
+
+{% block content %}
+<section id="seccion-listado">
+  <h2>Listado de avistamientos</h2>
+
+  {% if avistamientos.items %}
+    <table>
+      <thead>
+        <tr>
+          <th>Ave</th>
+          <th>Lugar</th>
+          <th>Fecha y hora</th>
+          <th>Voluntario(a)</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for avistamiento in avistamientos.items %}
+          <tr data-url="{{ url_for('detalle_avistamiento', avistamiento_id=avistamiento.id) }}"
+            onclick="window.location.href=this.dataset.url">
+            <td>{{ avistamiento.ave.nombre }}</td>
+            <td>{{ avistamiento.lugar }}</td>
+            <td>{{ avistamiento.fecha_hora.strftime('%d/%m/%Y %H:%M') }}</td>
+            <td>{{ avistamiento.voluntario.nombre }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="paginacion">
+      {% if avistamientos.has_prev %}
+        <a href="{{ url_for('listado_avistamientos', pagina=avistamientos.prev_num) }}">
+          « Anterior
+        </a>
+      {% endif %}
+
+      <span>
+        Página {{ avistamientos.page }} de {{ avistamientos.pages }}
+      </span>
+
+      {% if avistamientos.has_next %}
+        <a href="{{ url_for('listado_avistamientos', pagina=avistamientos.next_num) }}">
+          Siguiente »
+        </a>
+      {% endif %}
+    </div>
+
+  {% else %}
+    <p>No hay avistamientos registrados.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Registro de voluntario(a){% endblock %}
+
+{% block content %}
+<section id="seccion-registro">
+  <h2>Registro de voluntario(a)</h2>
+  <p>
+    Complete sus datos para poder identificarlo y contactarlo. Los campos
+    marcados con <span class="obligatorio">*</span> son obligatorios.
+  </p>
+
+  <form id="form-registro" novalidate action="{{ url_for('registrar_voluntario') }}" method="post">
+    <div class="campo">
+      <label for="nombre">Nombre <span class="obligatorio">*</span></label>
+      <input type="text" id="nombre" name="nombre" value="{{ valores.nombre or '' }}">
+      <span class="error{% if errores.nombre %} visible{% endif %}" id="error-nombre">
+        {{ errores.nombre or "Ingrese un nombre válido (mínimo 2 caracteres)." }}
+      </span>
+    </div>
+
+    <div class="campo">
+      <label for="email">Correo electrónico <span class="obligatorio">*</span></label>
+      <input type="email" id="email" name="email" placeholder="ejemplo@correo.cl" value="{{ valores.email or '' }}">
+      <span class="error{% if errores.email %} visible{% endif %}" id="error-email">
+        {{ errores.email or "Ingrese un correo electrónico con formato válido." }}
+      </span>
+    </div>
+
+    <div class="campo">
+      <label for="celular">Celular <span class="obligatorio">*</span></label>
+      <input type="tel" id="celular" name="celular" placeholder="+56 9 1234 5678" value="{{ valores.celular or '' }}">
+      <span class="error{% if errores.celular %} visible{% endif %}" id="error-celular">
+        {{ errores.celular or "Ingrese un celular chileno válido (ej: +56 9 1234 5678)." }}
+      </span>
+    </div>
+
+    <fieldset>
+      <legend>Dirección postal</legend>
+
+      <div class="campo">
+        <label for="region">Región <span class="obligatorio">*</span></label>
+        <select id="region" name="region">
+          <option value="">-- Seleccione una región --</option>
+        </select>
+        <span class="error{% if errores.region %} visible{% endif %}" id="error-region">
+          {{ errores.region or "Debe seleccionar una región." }}
+        </span>
+      </div>
+
+      <div class="campo">
+        <label for="comuna">Comuna <span class="obligatorio">*</span></label>
+        <select id="comuna" name="comuna">
+          <option value="">-- Seleccione primero una región --</option>
+        </select>
+        <span class="error{% if errores.comuna %} visible{% endif %}" id="error-comuna">
+          {{ errores.comuna or "Debe seleccionar una comuna." }}
+        </span>
+      </div>
+    </fieldset>
+
+    <button type="submit" id="btn-registrar">Registrarse</button>
+  </form>
+</section>
+{% endblock %}
+
+{% block javascript %}
+<script>
+  const REGIONES = {{ regiones | tojson }};
+  const COMUNAS_POR_REGION = {{ comunas_por_region | tojson }};
+  const REGION_SELECCIONADA = {{ (valores.region or "") | tojson }};
+  const COMUNA_SELECCIONADA = {{ (valores.comuna or "") | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/registro.js') }}"></script>
+{% endblock %}

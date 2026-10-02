@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Informar avistamiento{% endblock %}
+
+{% block content %}
+<section id="seccion-avistamiento">
+  <h2>Informar avistamiento</h2>
+  <p>
+    Complete los datos del avistamiento. Los campos marcados con
+    <span class="obligatorio">*</span> son obligatorios.
+  </p>
+
+  <form id="form-avistamiento" novalidate action="{{ url_for('registrar_avistamiento') }}"
+        method="post" enctype="multipart/form-data">
+    <div class="campo">
+      <label for="voluntario">Voluntario(a) que informa <span class="obligatorio">*</span></label>
+      <select id="voluntario" name="voluntario">
+        <option value="">-- Seleccione un voluntario registrado --</option>
+        {% for v in voluntarios %}
+          <option value="{{ v.id }}" {% if valores.voluntario|string == v.id|string %}selected{% endif %}>
+            {{ v.nombre }} ({{ v.email }})
+          </option>
+        {% endfor %}
+      </select>
+      <span class="error{% if errores.voluntario %} visible{% endif %}" id="error-voluntario">
+        {{ errores.voluntario or "Debe seleccionar un voluntario registrado." }}
+      </span>
+    </div>
+
+    <fieldset>
+      <legend>Ave avistada</legend>
+      <div class="campo">
+        <label for="ave">Nombre del ave <span class="obligatorio">*</span></label>
+        <input type="text" id="ave" name="ave" list="lista-aves" autocomplete="off" value="{{ valores.ave or '' }}">
+        <datalist id="lista-aves">
+          {% for ave in aves %}
+            <option value="{{ ave.nombre }}"></option>
+          {% endfor %}
+        </datalist>
+        <span class="error{% if errores.ave %} visible{% endif %}" id="error-ave">
+          {{ errores.ave or "Debe escribir el nombre de un ave existente en el catálogo." }}
+        </span>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Datos del avistamiento</legend>
+
+      <div class="campo">
+        <label for="lugar">Lugar del avistamiento <span class="obligatorio">*</span></label>
+        <input type="text" id="lugar" name="lugar" value="{{ valores.lugar or '' }}" placeholder="Ej: Parque Nacional Torres del Paine">
+        <span class="error{% if errores.lugar %} visible{% endif %}" id="error-lugar">
+          {{ errores.lugar or "Ingrese un lugar válido (mínimo 3 caracteres)." }}
+        </span>
+      </div>
+
+      <div class="campo">
+        <label for="fecha-hora">Fecha y hora del avistamiento <span class="obligatorio">*</span></label>
+        <input type="datetime-local" id="fecha-hora" name="fecha_hora" value="{{ valores.fecha_hora or '' }}">
+        <span class="error{% if errores.fecha_hora %} visible{% endif %}" id="error-fecha-hora">
+          {{ errores.fecha_hora or "La fecha no puede ser futura ni tener más de 1 año de antigüedad." }}
+        </span>
+      </div>
+
+      <div class="campo">
+        <label for="descripcion">Descripción (opcional)</label>
+        <textarea id="descripcion" name="descripcion" rows="4">{{ valores.descripcion or '' }}</textarea>
+      </div>
+    </fieldset>
+
+    <div class="campo">
+      <label for="archivos">Foto o vídeo del avistamiento <span class="obligatorio">*</span></label>
+      <input type="file" id="archivos" name="archivos" accept="image/*,video/*" multiple>
+      <span class="error{% if errores.archivos %} visible{% endif %}" id="error-archivos">
+        {{ errores.archivos or "Debe adjuntar al menos una foto o vídeo." }}
+      </span>
+    </div>
+
+    <button type="submit" id="btn-informar">Informar avistamiento</button>
+  </form>
+</section>
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ url_for('static', filename='js/avistamiento.js') }}"></script>
+{% endblock %}

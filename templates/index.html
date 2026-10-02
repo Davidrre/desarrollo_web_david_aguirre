@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+<section id="seccion-portada">
+
+  <h2>Bienvenido a la Unión de Ornitólogos de Chile</h2>
+
+  <p>
+    En este sitio puedes registrar voluntarios, informar avistamientos
+    de aves y consultar estadísticas.
+  </p>
+
+  <nav class="menu-portada">
+    <a href="{{ url_for('registrar_voluntario') }}">
+      Registrar voluntario
+    </a>
+
+    <a href="{{ url_for('registrar_avistamiento') }}">
+      Informar avistamiento
+    </a>
+
+    <a href="#">
+      Estadísticas
+    </a>
+  </nav>
+
+  <h3>Últimos avistamientos</h3>
+
+  {% if ultimos_avistamientos %}
+    <div class="ultimos-avistamientos">
+
+      {% for avistamiento in ultimos_avistamientos %}
+        <article class="resumen-avistamiento">
+
+          <h4>{{ avistamiento.ave.nombre }}</h4>
+
+          <p>
+            <strong>Lugar:</strong>
+            {{ avistamiento.lugar }}
+          </p>
+
+          <p>
+            <strong>Fecha:</strong>
+            {{ avistamiento.fecha_hora.strftime('%d/%m/%Y %H:%M') }}
+          </p>
+
+          <p>
+            <strong>Informado por:</strong>
+            {{ avistamiento.voluntario.nombre }}
+          </p>
+
+          <a href="{{ url_for(
+              'detalle_avistamiento',
+              avistamiento_id=avistamiento.id
+          ) }}">
+            Ver detalle
+          </a>
+
+        </article>
+      {% endfor %}
+
+    </div>
+  {% else %}
+    <p>Aún no hay avistamientos registrados.</p>
+  {% endif %}
+
+</section>
+{% endblock %}

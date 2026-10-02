@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Avistamiento registrado{% endblock %}
+
+{% block content %}
+<section id="seccion-avistamiento-exito">
+  <h2>¡Avistamiento registrado!</h2>
+  <p>
+    Se registró el avistamiento de <strong>{{ avistamiento.ave.nombre }}</strong>
+    en <strong>{{ avistamiento.lugar }}</strong>, informado por
+    <strong>{{ avistamiento.voluntario.nombre }}</strong>.
+  </p>
+  <div class="botones">
+    <a href="{{ url_for('registrar_avistamiento', voluntario_id=avistamiento.voluntario_id) }}">
+      <button type="button">Informar otro avistamiento</button>
+    </a>
+    <a href="{{ url_for('index') }}">
+      <button type="button">Ir al inicio</button>
+    </a>
+  </div>
+</section>
+{% endblock %}
