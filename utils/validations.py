@@ -1,7 +1,7 @@
 import re
 import filetype
 from datetime import datetime, timedelta
-from models import Region, Comuna, Voluntario, Ave
+from database.models import Region, Comuna, Voluntario, Ave
 
 
 def validar_nombre(nombre):
@@ -111,3 +111,18 @@ def validar_archivos(archivos):
             return False
 
     return True
+
+
+def validar_nombre_comentario(nombre):
+    # El enunciado pide entre 3 y 50 caracteres.
+    if not nombre:
+        return False
+    return 3 <= len(nombre.strip()) <= 50
+
+
+def validar_texto_comentario(texto):
+    # El enunciado pide al menos 5 caracteres. El máximo de 300 no lo pide
+    # el enunciado, pero es el largo de la columna "texto" en la base de datos.
+    if not texto:
+        return False
+    return 5 <= len(texto.strip()) <= 300

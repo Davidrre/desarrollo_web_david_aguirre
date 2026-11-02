@@ -59,8 +59,36 @@
     {% endfor %}
   </div>
 
+  <h3>Comentarios</h3>
+
+  <div id="lista-comentarios"></div>
+
+  <h4>Agregar comentario</h4>
+
+  <form id="form-comentario" novalidate
+        action="{{ url_for('comentarios_avistamiento', avistamiento_id=avistamiento.id) }}"
+        method="post">
+    <div class="campo">
+      <label for="nombre-comentario">Nombre <span class="obligatorio">*</span></label>
+      <input type="text" id="nombre-comentario" name="nombre">
+      <span class="error" id="error-nombre-comentario">Ingrese un nombre de entre 3 y 50 caracteres.</span>
+    </div>
+
+    <div class="campo">
+      <label for="texto-comentario">Comentario <span class="obligatorio">*</span></label>
+      <textarea id="texto-comentario" name="texto" rows="3" cols="40"></textarea>
+      <span class="error" id="error-texto-comentario">Ingrese un comentario de entre 5 y 300 caracteres.</span>
+    </div>
+
+    <button type="submit">Agregar comentario</button>
+  </form>
+
   <a href="{{ url_for('listado_avistamientos') }}">
     Volver al listado
   </a>
 </section>
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ url_for('static', filename='js/comentarios.js') }}"></script>
 {% endblock %}

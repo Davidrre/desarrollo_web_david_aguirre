@@ -3,10 +3,10 @@ import uuid
 import filetype
 from datetime import datetime
 from werkzeug.utils import secure_filename
-from flask import Flask, render_template, request, redirect, url_for
-from extensions import db
-from models import Region, Comuna, Voluntario, Ave, Avistamiento, Registro
-from validations import (
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from database.extensions import db
+from database.models import Region, Comuna, Voluntario, Ave, Avistamiento, Registro, Comentario
+from utils.validations import (
     validar_nombre,
     validar_email,
     validar_celular,
@@ -17,6 +17,8 @@ from validations import (
     validar_lugar,
     validar_fecha_hora,
     validar_archivos,
+    validar_nombre_comentario,
+    validar_texto_comentario,
 )
 
 app = Flask(__name__)
@@ -183,6 +185,109 @@ def detalle_avistamiento(avistamiento_id):
         "detalle_avistamiento.html",
         avistamiento=avistamiento
     )
+
+
+@app.route("/avistamiento/<int:avistamiento_id>/comentarios", methods=["GET", "POST"])
+def comentarios_avistamiento(avistamiento_id):
+    # Si el avistamiento no existe, Flask responde 404.
+    avistamiento = Avistamiento.query.get_or_404(avistamiento_id)
+
+    if request.method == "GET":
+        comentarios = (
+            Comentario.query
+            .filter_by(avistamiento_id=avistamiento.id)
+            .order_by(Comentario.fecha.desc())
+            .all()
+        )
+        data = [
+            {
+                "fecha": c.fecha.strftime("%d/%m/%Y %H:%M"),
+                "nombre": c.nombre,
+                "texto": c.texto,
+            }
+            for c in comentarios
+        ]
+        return jsonify({"status": "ok", "data": data})
+
+    # --- POST: llegaron los datos del formulario de comentario ---
+    nombre = request.form.get("nombre", "")
+    texto = request.form.get("texto", "")
+
+    errores = {}
+    if not validar_nombre_comentario(nombre):
+        errores["nombre"] = "Ingrese un nombre de entre 3 y 50 caracteres."
+    if not validar_texto_comentario(texto):
+        errores["texto"] = "Ingrese un comentario de entre 5 y 300 caracteres."
+
+    if errores:
+        return jsonify({"status": "error", "errores": errores}), 400
+
+    nuevo_comentario = Comentario(
+        nombre=nombre.strip(),
+        texto=texto.strip(),
+        fecha=datetime.now(),
+        avistamiento_id=avistamiento.id,
+    )
+    db.session.add(nuevo_comentario)
+    db.session.commit()
+
+    return jsonify({"status": "ok"})
+
+
+@app.route("/estadisticas", methods=["GET"])
+def estadisticas():
+    return render_template("estadisticas.html")
+
+
+@app.route("/estadisticas/avistamientos-por-dia", methods=["GET"])
+def estadisticas_avistamientos_por_dia():
+    # Agrupamos por la fecha (sin la hora) del avistamiento y contamos cuántos hay.
+    dia = db.func.date(Avistamiento.fecha_hora)
+    filas = (
+        db.session.query(dia, db.func.count(Avistamiento.id))
+        .group_by(dia)
+        .order_by(dia)
+        .all()
+    )
+
+    data = []
+    for fecha, total in filas:
+        # MySQL entrega un objeto date y SQLite un texto: str() sirve para ambos.
+        fecha_formateada = datetime.strptime(str(fecha), "%Y-%m-%d").strftime("%d/%m/%Y")
+        data.append({"fecha": fecha_formateada, "total": total})
+
+    return jsonify({"status": "ok", "data": data})
+
+
+@app.route("/estadisticas/avistamientos-por-ave", methods=["GET"])
+def estadisticas_avistamientos_por_ave():
+    # Unimos cada avistamiento con su ave, agrupamos por ave y contamos.
+    filas = (
+        db.session.query(Ave.nombre, db.func.count(Avistamiento.id))
+        .join(Avistamiento, Avistamiento.ave_id == Ave.id)
+        .group_by(Ave.id, Ave.nombre)
+        .order_by(db.func.count(Avistamiento.id).desc(), Ave.nombre)
+        .all()
+    )
+
+    data = [{"ave": nombre, "total": total} for nombre, total in filas]
+    return jsonify({"status": "ok", "data": data})
+
+
+@app.route("/estadisticas/voluntarios-por-comuna", methods=["GET"])
+def estadisticas_voluntarios_por_comuna():
+    # Unimos cada voluntario con su comuna, agrupamos por comuna y contamos.
+    # Con el join solo aparecen las comunas que tienen al menos un voluntario.
+    filas = (
+        db.session.query(Comuna.nombre, db.func.count(Voluntario.id))
+        .join(Voluntario, Voluntario.comuna_id == Comuna.id)
+        .group_by(Comuna.id, Comuna.nombre)
+        .order_by(Comuna.nombre)
+        .all()
+    )
+
+    data = [{"comuna": nombre, "total": total} for nombre, total in filas]
+    return jsonify({"status": "ok", "data": data})
 
 
 def obtener_datos_region_comuna():

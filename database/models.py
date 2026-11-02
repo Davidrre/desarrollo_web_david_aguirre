@@ -1,4 +1,4 @@
-from extensions import db
+from database.extensions import db
 
 
 class Region(db.Model):
@@ -66,3 +66,14 @@ class Registro(db.Model):
     avistamiento_id = db.Column(db.Integer, db.ForeignKey("avistamiento.id"), nullable=False)
 
     avistamiento = db.relationship("Avistamiento", backref="registros")
+
+class Comentario(db.Model):
+    __tablename__ = "comentario"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(80), nullable=False)
+    texto = db.Column(db.String(300), nullable=False)
+    fecha = db.Column(db.DateTime, nullable=False)
+    avistamiento_id = db.Column(db.Integer, db.ForeignKey("avistamiento.id"), nullable=False)
+
+    avistamiento = db.relationship("Avistamiento", backref="comentarios")
